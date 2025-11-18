@@ -112,8 +112,8 @@
             <form method="POST" action="/login">
                 @csrf
 
-                <label>Username</label>
-                <input type="text" name="username" placeholder="Masukkan username" required>
+                <label>Email</label>
+                <input type="text" name="email" placeholder="Masukkan email" required>
 
                 <label>Password</label>
                 <input type="password" name="password" placeholder="Masukkan password" required>
