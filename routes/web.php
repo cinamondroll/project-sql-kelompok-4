@@ -2,15 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
+
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
+Route::get('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
-Route::get('/logout', [LoginController::class, 'logout']);
+// Setelah login → tampil film dan kategori
+Route::get('/category', [CategoryController::class, 'index'])->middleware('auth');
 
-Route::get('/dashboard', function () {
-    return "Berhasil login sebagai staff!";
-})->middleware('auth');
+// Filter kategori
+Route::get('/category/{category}', [CategoryController::class, 'byCategory'])->middleware('auth');

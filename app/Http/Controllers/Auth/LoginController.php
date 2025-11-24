@@ -36,7 +36,7 @@ class LoginController extends Controller
         // Login manual
         Auth::login($staff);
 
-        return redirect('/dashboard');
+        return redirect('/category');
     }
 
     public function logout()
