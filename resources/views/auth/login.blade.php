@@ -52,6 +52,7 @@
             margin-bottom: 2px;
             font-size: 15px;
             transition: all 0.2s ease;
+            box-sizing: border-box;
         }
 
         input:focus {
