@@ -11,6 +11,7 @@ class Staff extends Authenticatable
     public $timestamps = false;
 
     protected $fillable = [
+        'staff_id',      // ➜ Tambahkan ini
         'first_name',
         'last_name',
         'address_id',
@@ -26,7 +27,7 @@ class Staff extends Authenticatable
         'password',
     ];
 
-    // Karena password sakila tidak di-hash:
+    // Password Sakila tidak di-hash
     public function getAuthPassword()
     {
         return $this->password;

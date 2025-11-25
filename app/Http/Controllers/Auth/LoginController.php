@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -20,21 +21,34 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        // Cari user berdasarkan email (tanpa hashing)
-        $staff = \App\Models\Staff::where('email', $request->email)->first();
+        // Panggil Stored Procedure login_staff
+        $result = DB::select("CALL login_staff(?, ?)", [
+            $request->email,
+            $request->password
+        ]);
 
-        // Jika tidak ada staff dengan email tsb
-        if (!$staff) {
-            return back()->withErrors(['email' => 'Email tidak ditemukan']);
+        // Jika kosong → email atau password salah
+        if (empty($result)) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah'
+            ]);
         }
 
-        // Cek password plain text (tanpa bcrypt)
-        if ($staff->password !== $request->password) {
-            return back()->withErrors(['password' => 'Password salah']);
-        }
+        // Ambil staff
+        $staffData = $result[0];
 
-        // Login manual
-        Auth::login($staff);
+        // Buat user model manual (GA PAKE DB)
+        $user = new \App\Models\Staff();
+        $user->staff_id   = $staffData->staff_id;
+        $user->first_name = $staffData->first_name;
+        $user->last_name  = $staffData->last_name;
+        $user->email      = $staffData->email;
+        $user->username   = $staffData->username;
+        $user->store_id   = $staffData->store_id;
+        $user->active     = $staffData->active;
+
+        // Login ke Auth Laravel
+        Auth::login($user);
 
         return redirect('/category');
     }
